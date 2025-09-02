@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MySQL Fundamentals — Interactive Guide</title>
+    <link rel="icon" type="image/webp" href="idg.png">
+    <meta name="theme-color" content="#0b0f1a" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet" />
+
+    <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+    <div class="bg-grid" aria-hidden="true"></div>
+    <header class="site-header glass" id="siteHeader"></header>
+
+    <aside class="side-nav glass" id="sideNav">
+        <div class="side-title">Contents</div>
+        <a href="#intro" class="active">Introduction</a>
+        <a href="#applications">Explanation / Applications</a>
+        <a href="#basic">Basic Commands</a>
+        <a href="#dml">Data Manipulation (DML)</a>
+        <a href="#ddl">Data Definition (DDL)</a>
+        <a href="#joins">Joins</a>
+        <a href="#agg">Aggregate & Grouping</a>
+        <a href="#order">Ordering & Limiting</a>
+    </aside>
+
+    <main class="content">
+        <section id="intro" class="card glass">
+            <h2>Introduction</h2>
+            <p>
+                This interactive guide covers the fundamentals of relational databases using MySQL.
+                You will learn the core commands for creating databases and tables, manipulating data,
+                and querying information using joins, filters, and aggregations.
+            </p>
+            <div class="tip">Tip: Click any code block to copy it.</div>
+        </section>
+
+        <section id="applications" class="card glass">
+            <h2>Explanation / Applications of Databases</h2>
+            <ul>
+                <li><strong>Persistence</strong>: Store and retrieve data reliably over time.</li>
+                <li><strong>Consistency</strong>: Enforce rules and constraints to keep data valid.</li>
+                <li><strong>Concurrency</strong>: Support multiple users at once with transactions.</li>
+                <li><strong>Querying</strong>: Extract insights with SQL across relations.</li>
+                <li><strong>Use cases</strong>: Web backends, analytics, inventory, finance, logging, IoT, etc.</li>
+            </ul>
+        </section>
+
+        <section id="basic" class="card glass">
+            <h2>Basic Commands</h2>
+            <div class="code-grid">
+                <div>
+                    <h3>Show databases</h3>
+                    <pre class="code" data-lang="sql"><code>SHOW DATABASES;</code></pre>
+                </div>
+                <div>
+                    <h3>Create database</h3>
+                    <pre class="code" data-lang="sql"><code>CREATE DATABASE company_db;</code></pre>
+                </div>
+                <div>
+                    <h3>Use database</h3>
+                    <pre class="code" data-lang="sql"><code>USE company_db;</code></pre>
+                </div>
+                <div>
+                    <h3>Drop database</h3>
+                    <pre class="code warning" data-lang="sql"><code>DROP DATABASE company_db;</code></pre>
+                </div>
+                <div>
+                    <h3>Show tables</h3>
+                    <pre class="code" data-lang="sql"><code>SHOW TABLES;</code></pre>
+                </div>
+                <div>
+                    <h3>Describe table</h3>
+                    <pre class="code" data-lang="sql"><code>DESCRIBE employees;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="dml" class="card glass">
+            <h2>Data Manipulation Language (DML)</h2>
+            <h3>SELECT basics</h3>
+            <div class="code-grid">
+                <div>
+                    <h4>All columns</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT * FROM employees;</code></pre>
+                </div>
+                <div>
+                    <h4>Specific columns</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT id, first_name, salary FROM employees;</code></pre>
+                </div>
+                <div>
+                    <h4>DISTINCT</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT DISTINCT department FROM employees;</code></pre>
+                </div>
+                <div>
+                    <h4>WHERE conditions</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT *
+FROM employees
+WHERE department = 'Sales'
+  AND salary &gt;= 50000
+  AND hire_date BETWEEN '2020-01-01' AND '2024-12-31';</code></pre>
+                </div>
+            </div>
+
+            <h3>INSERT</h3>
+            <div class="code-grid">
+                <div>
+                    <h4>Single row</h4>
+                    <pre class="code" data-lang="sql"><code>INSERT INTO employees (first_name, last_name, department, salary)
+VALUES ('Aisha', 'Khan', 'Engineering', 72000);</code></pre>
+                </div>
+                <div>
+                    <h4>Multiple rows</h4>
+                    <pre class="code" data-lang="sql"><code>INSERT INTO employees (first_name, last_name, department, salary) VALUES
+  ('Ravi', 'Patel', 'Sales', 48000),
+  ('Sara', 'Lopez', 'HR', 52000),
+  ('Mei', 'Chen', 'Engineering', 85000);</code></pre>
+                </div>
+            </div>
+
+            <h3>UPDATE</h3>
+            <pre class="code" data-lang="sql"><code>UPDATE employees
+SET salary = salary * 1.05
+WHERE department = 'Engineering';</code></pre>
+
+            <h3>DELETE</h3>
+            <pre class="code warning" data-lang="sql"><code>DELETE FROM employees
+WHERE id = 42;</code></pre>
+
+            <h3>TRUNCATE</h3>
+            <pre class="code warning" data-lang="sql"><code>TRUNCATE TABLE employees;</code></pre>
+        </section>
+
+        <section id="ddl" class="card glass">
+            <h2>Data Definition Language (DDL)</h2>
+            <h3>CREATE TABLE — Syntax</h3>
+            <pre class="code" data-lang="sql"><code>CREATE TABLE employees (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  department VARCHAR(50),
+  salary INT DEFAULT 0,
+  notes TEXT,
+  hire_date DATE NOT NULL,
+  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);</code></pre>
+
+            <div class="grid-2">
+                <div>
+                    <h4>Common Data Types</h4>
+                    <ul>
+                        <li><strong>INT</strong>: Whole numbers</li>
+                        <li><strong>VARCHAR(n)</strong>: Variable-length text</li>
+                        <li><strong>TEXT</strong>: Long text</li>
+                        <li><strong>DATE</strong>: Calendar date</li>
+                        <li><strong>DATETIME</strong>: Date and time</li>
+                        <li><strong>DECIMAL(p,s)</strong>: Exact numeric values</li>
+                        <li><strong>BOOLEAN</strong>: True/False (alias of TINYINT)</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>Common Constraints</h4>
+                    <ul>
+                        <li><strong>PRIMARY KEY</strong>: Unique row identifier</li>
+                        <li><strong>FOREIGN KEY</strong>: Reference another table</li>
+                        <li><strong>NOT NULL</strong>: Must have a value</li>
+                        <li><strong>UNIQUE</strong>: No duplicates</li>
+                        <li><strong>DEFAULT</strong>: Value if none provided</li>
+                        <li><strong>AUTO_INCREMENT</strong>: Auto-increasing integer</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>ALTER TABLE</h3>
+            <div class="code-grid">
+                <div>
+                    <h4>Add column</h4>
+                    <pre class="code" data-lang="sql"><code>ALTER TABLE employees
+ADD COLUMN email VARCHAR(120) UNIQUE;</code></pre>
+                </div>
+                <div>
+                    <h4>Modify column</h4>
+                    <pre class="code" data-lang="sql"><code>ALTER TABLE employees
+MODIFY COLUMN salary INT NOT NULL;</code></pre>
+                </div>
+                <div>
+                    <h4>Change column name</h4>
+                    <pre class="code" data-lang="sql"><code>ALTER TABLE employees
+CHANGE COLUMN notes comments TEXT;</code></pre>
+                </div>
+                <div>
+                    <h4>Drop column</h4>
+                    <pre class="code" data-lang="sql"><code>ALTER TABLE employees
+DROP COLUMN email;</code></pre>
+                </div>
+                <div>
+                    <h4>Rename table</h4>
+                    <pre class="code" data-lang="sql"><code>RENAME TABLE employees TO staff;</code></pre>
+                </div>
+            </div>
+
+            <h3>DROP TABLE</h3>
+            <pre class="code warning" data-lang="sql"><code>DROP TABLE staff;</code></pre>
+        </section>
+
+        <section id="joins" class="card glass">
+            <h2>Joins</h2>
+            <div class="grid-2">
+                <div>
+                    <h4>INNER JOIN</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT e.first_name, d.name AS department
+FROM employees e
+INNER JOIN departments d ON e.department_id = d.id;</code></pre>
+                </div>
+                <div>
+                    <h4>LEFT JOIN</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT e.first_name, d.name AS department
+FROM employees e
+LEFT JOIN departments d ON e.department_id = d.id;</code></pre>
+                </div>
+                <div>
+                    <h4>RIGHT JOIN</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT e.first_name, d.name AS department
+FROM employees e
+RIGHT JOIN departments d ON e.department_id = d.id;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="agg" class="card glass">
+            <h2>Aggregate Functions and Grouping</h2>
+            <div class="code-grid">
+                <div>
+                    <h4>COUNT</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT COUNT(*) AS total_employees FROM employees;</code></pre>
+                </div>
+                <div>
+                    <h4>SUM / AVG</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT SUM(salary) AS total_payroll, AVG(salary) AS avg_salary
+FROM employees;</code></pre>
+                </div>
+                <div>
+                    <h4>MIN / MAX</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT MIN(salary) AS min_salary, MAX(salary) AS max_salary
+FROM employees;</code></pre>
+                </div>
+                <div>
+                    <h4>GROUP BY</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT department, COUNT(*) AS headcount, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department;</code></pre>
+                </div>
+                <div>
+                    <h4>HAVING</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT department, AVG(salary) AS avg_salary
+FROM employees
+GROUP BY department
+HAVING AVG(salary) &gt; 60000;</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <section id="order" class="card glass">
+            <h2>Ordering and Limiting</h2>
+            <div class="code-grid">
+                <div>
+                    <h4>ORDER BY</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT first_name, salary
+FROM employees
+ORDER BY salary DESC, first_name ASC;</code></pre>
+                </div>
+                <div>
+                    <h4>LIMIT</h4>
+                    <pre class="code" data-lang="sql"><code>SELECT * FROM employees
+ORDER BY hire_date DESC
+LIMIT 10 OFFSET 0; -- Top 10 most recent</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <footer class="site-footer">
+            <p>&copy; 2025 C++ Fundamentals Workshop. Built for first year IT/COMSCIE students.</p>
+
+        </footer>
+    </main>
+
+    <button class="to-top" aria-label="Scroll to top">↑</button>
+
+    <script src="script.js"></script>
+</body>
+<!--
+Note: This is a static learning resource. For running SQL, use a local MySQL instance
+or an online SQL sandbox.
+-->
+</html>
+
+
